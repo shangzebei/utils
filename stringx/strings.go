@@ -34,3 +34,7 @@ func HexTODecimal(o string) uint64 {
 	}
 	return n
 }
+
+func DecimalTOHex(de int64) string {
+	return Fprintf("%x", de)
+}

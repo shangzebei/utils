@@ -12,4 +12,5 @@ func TestName(t *testing.T) {
 
 func TestHexTODecimal(t *testing.T) {
 	fmt.Println(HexTODecimal("0x1e7d4c"))
+	fmt.Println(DecimalTOHex(1998156))
 }
