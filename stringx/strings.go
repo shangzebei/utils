@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/shangzebei/utils/optional"
+	"strconv"
 
 	"sort"
 )
@@ -23,4 +24,13 @@ func Fprintf(s string, f ...interface{}) string {
 	temp := bytes.NewBufferString("")
 	optional.OfErrorable(fmt.Fprintf(temp, s, f...))
 	return temp.String()
+}
+
+func HexTODecimal(o string) uint64 {
+	val := o[2:]
+	n, e := strconv.ParseUint(val, 16, 32)
+	if e != nil {
+		return 0
+	}
+	return n
 }
