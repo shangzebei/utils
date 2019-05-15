@@ -126,9 +126,8 @@ func (o *Optional) ThenSetE(tag int, f func(interface{}) (interface{}, error)) *
 
 func (o *Optional) error(err error) {
 	if o.ef != nil {
-		o.ef(err)
-	} else {
 		logrus.Tracef("Optional SetError not set,stack %s", debugInfo())
+		o.ef(err)
 	}
 }
 
