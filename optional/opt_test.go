@@ -11,6 +11,19 @@ func TestName(t *testing.T) {
 
 }
 
+type B struct {
+}
+type A struct {
+	bb *B
+}
+
+func TestOfNilable(t *testing.T) {
+	a := &A{}
+	var b interface{}
+	b = a.bb
+	fmt.Println(isNilValue(b), b == nil)
+}
+
 func a() (string, error) {
 	return "aaaaaa", nil
 }
