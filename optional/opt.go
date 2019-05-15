@@ -37,8 +37,11 @@ func isNil(f interface{}) bool {
 }
 
 func isErr(err error) bool {
-	logrus.Tracef("error occur = %s stack =%s", err.Error(), debugInfo())
-	return err != nil
+	if err != nil {
+		logrus.Tracef("error occur = %s stack =%s", err.Error(), debugInfo())
+		return true
+	}
+	return false
 }
 
 func SetGlobDebug(f bool) {
