@@ -21,7 +21,10 @@ func TestOfNilable(t *testing.T) {
 	a := &A{}
 	var b interface{}
 	b = a.bb
-	fmt.Println(isNilValue(b), b == nil)
+	fmt.Println(isNil(b), b == nil)
+	fmt.Println(isNil(2), b == nil)
+	fmt.Println(isNil(A{}), b == nil)
+	fmt.Println(isNil([]string{}), b == nil)
 }
 
 func a() (string, error) {

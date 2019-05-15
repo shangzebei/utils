@@ -22,7 +22,11 @@ func OfNilable(t interface{}) *Optional {
 }
 
 func isNil(f interface{}) bool {
-	return f == nil || reflect.ValueOf(f).IsNil()
+	if reflect.TypeOf(f).Kind() == reflect.Ptr {
+		return f == nil || reflect.ValueOf(f).IsNil()
+	}
+	return f == nil
+
 }
 
 func SetGlobDebug(f bool) {
