@@ -13,22 +13,33 @@ type Optional struct {
 	ev   error
 	tagV map[int]interface{}
 	ef   func(error)
+	pass bool
 }
 
 var debugFlags = false
 
 func OfNilable(t interface{}) *Optional {
-	return &Optional{fv: t, tagV: make(map[int]interface{})}
+	return &Optional{fv: t, tagV: make(map[int]interface{}), pass: false}
 }
 
-func isNil(f interface{}) bool {
+func (o *Optional) isNil(f interface{}) bool {
 	if f == nil {
-		logrus.Tracef("Then fv = nil stack = %s", debugInfo())
+		if !o.pass {
+			logrus.Tracef("nil check stack =%s", debugInfo())
+		}
+		o.pass = true
 		return true
 	}
 	switch reflect.TypeOf(f).Kind() {
 	case reflect.Ptr:
-		return reflect.ValueOf(f).IsNil()
+		isnil := reflect.ValueOf(f).IsNil()
+		if isnil {
+			if !o.pass {
+				logrus.Tracef("nil check stack =%s", debugInfo())
+			}
+			o.pass = true
+		}
+		return isnil
 	case reflect.String:
 		return f.(string) == ""
 	}
@@ -38,7 +49,6 @@ func isNil(f interface{}) bool {
 
 func isErr(err error) bool {
 	if err != nil {
-		logrus.Tracef("error occur = %s stack =%s", err.Error(), debugInfo())
 		return true
 	}
 	return false
@@ -49,11 +59,14 @@ func SetGlobDebug(f bool) {
 }
 
 func Of(f func() interface{}) *Optional {
-	return &Optional{fv: f(), tagV: make(map[int]interface{})}
+	return &Optional{fv: f(), tagV: make(map[int]interface{}), pass: false}
 }
 
 func (o *Optional) Then(f func(interface{}) interface{}) *Optional {
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		o.fv = f(o.fv)
 	}
 	return o
@@ -67,7 +80,10 @@ func debugInfo() string {
 }
 
 func (o *Optional) ThenE(f func(interface{}) (interface{}, error)) *Optional {
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		var err error
 		o.fv, err = f(o.fv)
 		if err != nil {
@@ -91,17 +107,19 @@ func (o *Optional) OfError(f func(error)) *Optional {
 	if isErr(o.ev) && o.ef != nil {
 		f(o.ev)
 	}
-	if isNil(o.fv) {
+	if o.isNil(o.fv) {
 		f(errors.New("last value nul"))
 	}
 	return o
 }
 
 func (o *Optional) ThenSet(tag int, f func(interface{}) interface{}) *Optional {
-
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		o.fv = f(o.fv)
-		if isNil(o.fv) {
+		if o.isNil(o.fv) {
 			o.error(errors.New("ThenSet return nil point"))
 			return o
 		}
@@ -111,14 +129,17 @@ func (o *Optional) ThenSet(tag int, f func(interface{}) interface{}) *Optional {
 }
 
 func (o *Optional) ThenSetE(tag int, f func(interface{}) (interface{}, error)) *Optional {
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		var err error
 		o.fv, err = f(o.fv)
 		if err != nil {
 			o.error(err)
 			return o
 		}
-		if isNil(o.fv) {
+		if o.isNil(o.fv) {
 			o.error(errors.New("ThenSet return nil point"))
 			return o
 		}
@@ -128,20 +149,24 @@ func (o *Optional) ThenSetE(tag int, f func(interface{}) (interface{}, error)) *
 }
 
 func (o *Optional) error(err error) {
-	o.fv = nil
+	o.pass = true
+	logrus.Tracef("error %s stack %s", err.Error(), debugInfo())
 	if o.ef != nil {
 		o.ef(err)
 	}
 }
 
 func (o *Optional) ThenGet(f func(interface{}) interface{}, tag ...int) *Optional {
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		var kk []interface{}
 		for _, value := range tag {
 			kk = append(kk, o.tagV[value])
 		}
 		o.fv = f(kk)
-		if isNil(o.fv) {
+		if o.isNil(o.fv) {
 			o.ef(errors.New("ThenGet return nil point"))
 			o.fv = nil
 			return o
@@ -151,13 +176,16 @@ func (o *Optional) ThenGet(f func(interface{}) interface{}, tag ...int) *Optiona
 }
 
 func (o *Optional) ThenGetE(f func(interface{}) (interface{}, error), tag ...int) *Optional {
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if o.pass {
+		return o
+	}
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		var kk []interface{}
 		for _, value := range tag {
 			kk = append(kk, o.tagV[value])
 		}
 		o.fv, o.ev = f(kk)
-		if isNil(o.fv) {
+		if o.isNil(o.fv) {
 			o.ef(errors.New("ThenGet return nil point"))
 			o.fv = nil
 			return o
@@ -170,7 +198,7 @@ func OfErrorable(a interface{}, err error) *Optional {
 	if err != nil {
 		logrus.Trace(err.Error())
 	}
-	return &Optional{ev: err, fv: a, tagV: make(map[int]interface{})}
+	return &Optional{ev: err, fv: a, tagV: make(map[int]interface{}), pass: false}
 }
 
 func (o *Optional) IsPrent() bool {
@@ -182,7 +210,7 @@ func (o *Optional) IsPrent() bool {
 	default:
 
 	}
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		return true
 	} else {
 		return false
@@ -194,13 +222,13 @@ func (o *Optional) IfPrent(f func(interface{})) {
 		o.error(o.ev)
 		return
 	}
-	if !isNil(o.fv) && !isErr(o.ev) {
+	if !o.isNil(o.fv) && !isErr(o.ev) {
 		f(o.fv)
 	}
 }
 
 func (o *Optional) OrElseGet(f func() interface{}) interface{} {
-	if isNil(o.fv) && isErr(o.ev) {
+	if o.isNil(o.fv) && isErr(o.ev) {
 		return f()
 	} else {
 		return o.fv
