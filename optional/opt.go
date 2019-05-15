@@ -25,8 +25,11 @@ func isNil(f interface{}) bool {
 	if f == nil {
 		return true
 	}
-	if reflect.TypeOf(f).Kind() == reflect.Ptr {
+	switch reflect.TypeOf(f).Kind() {
+	case reflect.Ptr:
 		return reflect.ValueOf(f).IsNil()
+	case reflect.String:
+		return f.(string) == ""
 	}
 	return false
 
@@ -129,8 +132,10 @@ func (o *Optional) ThenSetE(tag int, f func(interface{}) (interface{}, error)) *
 
 func (o *Optional) error(err error) {
 	if o.ef != nil {
-		logrus.Tracef("Optional SetError not set,stack %s", debugInfo())
+		logrus.Tracef("error occur,stack %s", debugInfo())
 		o.ef(err)
+	} else {
+		logrus.Tracef("Optional SetError not set,stack %s", debugInfo())
 	}
 }
 
