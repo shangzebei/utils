@@ -14,8 +14,14 @@ type Optional struct {
 	ef   func(error)
 }
 
+var debugFlags = false
+
 func OfNilable(t interface{}) *Optional {
 	return &Optional{fv: t, tagV: make(map[int]interface{})}
+}
+
+func SetGlobDebug(f bool) {
+	debugFlags = f
 }
 
 func Of(f func() interface{}) *Optional {
@@ -26,9 +32,16 @@ func (o *Optional) Then(f func(interface{}) interface{}) *Optional {
 	if o.fv != nil && o.ev == nil {
 		o.fv = f(o.fv)
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
+}
+
+func debugInfo() string {
+	if debugFlags {
+		return string(debug.Stack())
+	}
+	return ""
 }
 
 func (o *Optional) ThenE(f func(interface{}) (interface{}, error)) *Optional {
@@ -41,7 +54,7 @@ func (o *Optional) ThenE(f func(interface{}) (interface{}, error)) *Optional {
 			return o
 		}
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
 }
@@ -76,7 +89,7 @@ func (o *Optional) ThenSet(tag int, f func(interface{}) interface{}) *Optional {
 		}
 		o.tagV[tag] = &o.fv
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
 }
@@ -97,7 +110,7 @@ func (o *Optional) ThenSetE(tag int, f func(interface{}) (interface{}, error)) *
 		}
 		o.tagV[tag] = o.fv
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
 }
@@ -106,7 +119,7 @@ func (o *Optional) error(err error) {
 	if o.ef != nil {
 		o.ef(err)
 	} else {
-		logrus.Tracef("Optional SetError not set,stack %s", string(debug.Stack()))
+		logrus.Tracef("Optional SetError not set,stack %s", debugInfo())
 	}
 }
 
@@ -123,7 +136,7 @@ func (o *Optional) ThenGet(f func(interface{}) interface{}, tag ...int) *Optiona
 			return o
 		}
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
 }
@@ -141,7 +154,7 @@ func (o *Optional) ThenGetE(f func(interface{}) (interface{}, error), tag ...int
 			return o
 		}
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
 	return o
 }
@@ -157,7 +170,7 @@ func (o *Optional) IsPrent() bool {
 	switch o.fv.(type) {
 	case string:
 		if o.fv.(string) == "" {
-			logrus.Tracef("IsPrent warn return type string = '' stack= %s", string(debug.Stack()))
+			logrus.Tracef("IsPrent warn return type string = '' stack= %s", debugInfo())
 		}
 	default:
 
@@ -165,7 +178,7 @@ func (o *Optional) IsPrent() bool {
 	if o.fv != nil && o.ev == nil {
 		return true
 	} else {
-		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, string(debug.Stack()))
+		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 		return false
 	}
 }
