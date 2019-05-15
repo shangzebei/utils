@@ -6,7 +6,7 @@ import (
 )
 
 func HandSignal(f func(), sigs ...os.Signal) {
-	c := make(chan os.Signal)
+	c := make(chan os.Signal, len(sigs))
 	signal.Notify(c, sigs...)
 	go func() {
 		<-c
