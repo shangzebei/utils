@@ -99,7 +99,7 @@ func (o *Optional) ThenSet(tag int, f func(interface{}) interface{}) *Optional {
 			o.fv = nil
 			return o
 		}
-		o.tagV[tag] = &o.fv
+		o.tagV[tag] = o.fv
 	} else {
 		logrus.Tracef("Then fv = %p and error = %p stack =%s ", o.fv, o.ev, debugInfo())
 	}
