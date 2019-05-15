@@ -22,10 +22,13 @@ func OfNilable(t interface{}) *Optional {
 }
 
 func isNil(f interface{}) bool {
-	if reflect.TypeOf(f).Kind() == reflect.Ptr {
-		return f == nil || reflect.ValueOf(f).IsNil()
+	if f == nil {
+		return true
 	}
-	return f == nil
+	if reflect.TypeOf(f).Kind() == reflect.Ptr {
+		return reflect.ValueOf(f).IsNil()
+	}
+	return false
 
 }
 
