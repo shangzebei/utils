@@ -1,7 +1,6 @@
 package arrays
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -24,14 +23,12 @@ func (ar *Arrays) Out() interface{} {
 
 func (ar *Arrays) Remove(v interface{}) *Arrays {
 	valueOf := reflect.ValueOf(ar.arr)
-	var temp []reflect.Value
-	fmt.Println(valueOf.Len(), valueOf.Cap())
 	for i := 0; i < valueOf.Len(); i++ {
 		in := valueOf.Index(i)
-		if in.Interface() != v {
-			temp = append(temp, valueOf.Index(i))
+		if in.Interface() == v {
+			reflect.ValueOf(&ar.arr).Elem().Set(reflect.AppendSlice(valueOf.Slice(0, i),
+				valueOf.Slice(i+1, valueOf.Len())))
 		}
 	}
-	ar.arr = reflect.ValueOf(temp).Interface()
 	return ar
 }
