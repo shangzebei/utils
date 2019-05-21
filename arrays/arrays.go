@@ -18,7 +18,10 @@ func (ar *Arrays) Add(v interface{}) *Arrays {
 }
 
 func (ar *Arrays) Out() interface{} {
-	return ar.arr
+	if reflect.TypeOf(ar.arr).Kind() == reflect.Array {
+		return ar.arr
+	}
+	return nil
 }
 
 func (ar *Arrays) Remove(v interface{}) *Arrays {

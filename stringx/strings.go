@@ -1,9 +1,7 @@
 package stringx
 
 import (
-	"bytes"
 	"fmt"
-	"github.com/shangzebei/utils/optional"
 	"strconv"
 
 	"sort"
@@ -20,12 +18,6 @@ func Distinct(s []string) []string {
 	return re
 }
 
-func Fprintf(s string, f ...interface{}) string {
-	temp := bytes.NewBufferString("")
-	optional.OfErrorable(fmt.Fprintf(temp, s, f...))
-	return temp.String()
-}
-
 func HexTODecimal(o string) uint64 {
 	val := o[2:]
 	n, e := strconv.ParseUint(val, 16, 32)
@@ -36,5 +28,5 @@ func HexTODecimal(o string) uint64 {
 }
 
 func DecimalTOHex(de int64) string {
-	return Fprintf("%x", de)
+	return fmt.Sprintf("%x", de)
 }
