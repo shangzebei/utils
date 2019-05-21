@@ -1,6 +1,7 @@
 package arrays
 
 import (
+	"github.com/sirupsen/logrus"
 	"reflect"
 )
 
@@ -13,15 +14,21 @@ func Of(ar interface{}) *Arrays {
 }
 
 func (ar *Arrays) Add(v interface{}) *Arrays {
-	ar.arr = reflect.Append(reflect.ValueOf(ar.arr), reflect.ValueOf(v)).Interface()
+	if reflect.TypeOf(ar.arr).Kind() == reflect.Slice {
+		ar.arr = reflect.Append(reflect.ValueOf(ar.arr), reflect.ValueOf(v)).Interface()
+	} else {
+		logrus.Error("error add v ", reflect.TypeOf(ar.arr).Kind())
+	}
 	return ar
 }
 
 func (ar *Arrays) Out() interface{} {
-	if reflect.TypeOf(ar.arr).Kind() == reflect.Array {
+	if reflect.TypeOf(ar.arr).Kind() == reflect.Slice {
 		return ar.arr
+	} else {
+		logrus.Error("is not slice ", ar.arr)
+		return nil
 	}
-	return nil
 }
 
 func (ar *Arrays) Remove(v interface{}) *Arrays {

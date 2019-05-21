@@ -2,6 +2,7 @@ package arrays
 
 import (
 	"fmt"
+	"strconv"
 	"testing"
 )
 
@@ -18,4 +19,14 @@ func TestName(t *testing.T) {
 	//fmt.Println(reflect.ValueOf(name).Addr().Kind())
 	//reflect.ValueOf(name).Elem().Set(reflect.ValueOf(a))
 	//reflect.ValueOf(&name).Elem().Set(reflect.ValueOf(a))
+}
+
+func BenchmarkName(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		fmt.Println(Of([]string{"1"}).Add(strconv.Itoa(i)).Out())
+	}
+}
+
+func TestV(t *testing.T) {
+	fmt.Println(Of([]string{"1"}).Add("2").Out())
 }
