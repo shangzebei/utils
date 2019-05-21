@@ -31,7 +31,7 @@ func (o *Optional) isNil(f interface{}) bool {
 		return true
 	}
 	switch reflect.TypeOf(f).Kind() {
-	case reflect.Ptr:
+	case reflect.Ptr, reflect.Map:
 		isnil := reflect.ValueOf(f).IsNil()
 		if isnil {
 			if !o.pass {
@@ -42,6 +42,8 @@ func (o *Optional) isNil(f interface{}) bool {
 		return isnil
 	case reflect.String:
 		return f.(string) == ""
+	default:
+
 	}
 	return false
 

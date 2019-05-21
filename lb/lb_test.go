@@ -19,6 +19,14 @@ func TestLbRand_SelectOne(t *testing.T) {
 	}
 }
 
+func TestLBPoll_SelectOne(t *testing.T) {
+	poll := &LbRand{}
+	for i := 0; i < 10; i++ {
+		fmt.Println(poll.SelectOne([]string{"a"}))
+	}
+
+}
+
 func BenchmarkName(b *testing.B) {
 	poll := &LBPoll{}
 	for i := 0; i < b.N; i++ {
