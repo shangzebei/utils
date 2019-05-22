@@ -14,11 +14,7 @@ func Of(ar interface{}) *Arrays {
 }
 
 func (ar *Arrays) Add(v interface{}) *Arrays {
-	if reflect.TypeOf(ar.arr).Kind() == reflect.Slice {
-		ar.arr = reflect.Append(reflect.ValueOf(ar.arr), reflect.ValueOf(v)).Interface()
-	} else {
-		logrus.Error("error add v ", reflect.TypeOf(ar.arr).Kind())
-	}
+	reflect.ValueOf(&ar.arr).Elem().Set(reflect.Append(reflect.ValueOf(ar.arr), reflect.ValueOf(v)))
 	return ar
 }
 
