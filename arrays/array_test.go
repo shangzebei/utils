@@ -28,5 +28,5 @@ func BenchmarkName(b *testing.B) {
 }
 
 func TestV(t *testing.T) {
-	fmt.Println(Of([]string{"1"}).Add("2").Out())
+	fmt.Println(Of([]string{"1"}).Add("").Remove("1").Strings())
 }

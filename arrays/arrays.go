@@ -42,3 +42,11 @@ func (ar *Arrays) Remove(v interface{}) *Arrays {
 	}
 	return ar
 }
+
+func (ar *Arrays) Strings() []string {
+	return ar.arr.([]string)
+}
+
+func (ar *Arrays) Ints() []int64 {
+	return ar.arr.([]int64)
+}
