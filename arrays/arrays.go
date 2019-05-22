@@ -10,6 +10,10 @@ type Arrays struct {
 }
 
 func Of(ar interface{}) *Arrays {
+	if reflect.TypeOf(ar).Kind() != reflect.Slice {
+		logrus.Error("of input is not slice")
+		return nil
+	}
 	return &Arrays{arr: ar}
 }
 
@@ -19,12 +23,8 @@ func (ar *Arrays) Add(v interface{}) *Arrays {
 }
 
 func (ar *Arrays) Out() interface{} {
-	if reflect.TypeOf(ar.arr).Kind() == reflect.Slice {
-		return ar.arr
-	} else {
-		logrus.Error("is not slice ", ar.arr)
-		return nil
-	}
+	return ar.arr
+
 }
 
 func (ar *Arrays) Remove(v interface{}) *Arrays {
