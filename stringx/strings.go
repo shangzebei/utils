@@ -1,7 +1,9 @@
 package stringx
 
 import (
+	"encoding/hex"
 	"fmt"
+	"math/big"
 	"strconv"
 
 	"sort"
@@ -29,4 +31,23 @@ func HexTODecimal(o string) uint64 {
 
 func DecimalTOHex(de int64) string {
 	return fmt.Sprintf("%x", de)
+}
+
+func HexTODecString(hexs string) string {
+	var v []byte
+	if hexs[:2] == "0x" {
+		v, _ = hex.DecodeString(hexs[2:])
+	} else {
+		v, _ = hex.DecodeString(hexs)
+	}
+	return big.NewInt(0).SetBytes(v).String()
+}
+
+func DecStringToHex(ds string) string {
+	v, _ := big.NewInt(0).SetString(ds, 10)
+	return BigIntToHex(v)
+}
+
+func BigIntToHex(n *big.Int) string {
+	return fmt.Sprintf("%x", n)
 }
