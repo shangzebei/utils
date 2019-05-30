@@ -2,6 +2,7 @@ package stringx
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"math/big"
 	"testing"
 )
@@ -17,7 +18,12 @@ func TestHexTODecimal(t *testing.T) {
 }
 
 func TestHex(t *testing.T) {
-	fmt.Println(HexTODecString("0x1e7d4c"))
-	fmt.Println(DecStringToHex("1998156"))
-	fmt.Println(BigIntToHex(big.NewInt(56565)))
+	assert.Equal(t, "1998156", HexTODecString("0x1e7d4c"))
+	assert.Equal(t, "1e7d4c", DecStringToHex("1998156"))
+	assert.Equal(t, "dcf5", BigIntToHex(big.NewInt(56565)))
+	assert.Equal(t, "200000000000000000000", HexTODecString("0xad78ebc5ac6200000"))
+}
+
+func TestBIg(t *testing.T) {
+
 }

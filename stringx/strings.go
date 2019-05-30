@@ -34,13 +34,7 @@ func DecimalTOHex(de int64) string {
 }
 
 func HexTODecString(hexs string) string {
-	var v []byte
-	if hexs[:2] == "0x" {
-		v, _ = hex.DecodeString(hexs[2:])
-	} else {
-		v, _ = hex.DecodeString(hexs)
-	}
-	return big.NewInt(0).SetBytes(v).String()
+	return big.NewInt(0).SetBytes(FromHex(hexs)).String()
 }
 
 func DecStringToHex(ds string) string {
@@ -50,4 +44,21 @@ func DecStringToHex(ds string) string {
 
 func BigIntToHex(n *big.Int) string {
 	return fmt.Sprintf("%x", n)
+}
+
+func FromHex(s string) []byte {
+	if len(s) > 1 {
+		if s[0:2] == "0x" || s[0:2] == "0X" {
+			s = s[2:]
+		}
+	}
+	if len(s)%2 == 1 {
+		s = "0" + s
+	}
+	return Hex2Bytes(s)
+}
+
+func Hex2Bytes(str string) []byte {
+	h, _ := hex.DecodeString(str)
+	return h
 }
