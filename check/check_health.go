@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -23,29 +24,37 @@ type serverStatus struct {
 	Up       func(int)
 }
 
-var pool map[int]string
-
-func init() {
-	pool = make(map[int]string)
-}
+var pool sync.Map
 
 func GetAddr(i int) string {
-	return pool[i]
+	v, b := pool.Load(i)
+	if b {
+		return v.(string)
+	}
+	return ""
 }
 
 func AddCheck(addr string, interval time.Duration, up func(int), down func(int)) int {
 
 	t := 0
-	for key, value := range pool {
-		if key > t {
-			t = key
+	exit := false
+	//get max id if exist return
+	pool.Range(func(key, value interface{}) bool {
+		if key.(int) > t {
+			t = key.(int)
 		}
 		if value == addr {
+			exit = true
+			t = key.(int)
 			logrus.Debugf("url %s check has exist", addr)
-			return key
+			return false
 		}
+		return true
+	})
+	if exit {
+		return t
 	}
-	pool[t+1] = addr
+	pool.Store(t+1, addr)
 	check := &Check{
 		Up:     make(chan int),
 		Down:   make(chan int),
