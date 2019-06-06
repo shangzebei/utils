@@ -111,7 +111,7 @@ func (c *Check) CheckRunInterval(s serverStatus) {
 			//logrus.Tracef("Check pool %s", pool)
 			checker := c.HTTPChecker(s.Addr, 200, time.Second*5, nil)
 			if checker != nil {
-				logrus.Trace(checker)
+				logrus.Tracef("check addr %s id %d err=%s", s.Addr, s.Id, checker.Error())
 				s.Down(s.Id)
 			} else {
 				s.Up(s.Id)
