@@ -46,7 +46,7 @@ func AddCheck(addr string, interval time.Duration, up func(int), down func(int))
 		if value == addr {
 			exit = true
 			t = key.(int)
-			logrus.Debugf("url %s check has exist", addr)
+			logrus.Tracef("url %s check has exist", addr)
 			return false
 		}
 		return true
