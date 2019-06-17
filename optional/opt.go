@@ -108,9 +108,12 @@ func (o *Optional) OfError(f func(error)) *Optional {
 	o.ef = f
 	if isErr(o.ev) && o.ef != nil {
 		f(o.ev)
+		o.ef = nil
+		return o
 	}
 	if o.isNil(o.fv) {
 		f(errors.New("last value nul"))
+		o.ef = nil
 	}
 	return o
 }

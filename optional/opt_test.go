@@ -1,6 +1,7 @@
 package optional
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -17,19 +18,19 @@ type A struct {
 	bb *B
 }
 
-func TestOfNilable(t *testing.T) {
-	a := &A{}
-	var b interface{}
-	b = a.bb
-	fmt.Println(isNil(b), b == nil)
-	fmt.Println(isNil(2), b == nil)
-	fmt.Println(isNil(A{}), b == nil)
-	fmt.Println(isNil([]string{}), b == nil)
+func TestOfNilableOnce(t *testing.T) {
+	OfErrorable(nil, errors.New("error")).OfError(func(e error) {
+		fmt.Println("aaaaa")
+	}).Then(func(i interface{}) interface{} {
+		return i
+	})
+	//OutPut aaaaa
 }
 
 func a() (string, error) {
 	return "aaaaaa", nil
 }
+
 func b() (string, string) {
 	return "aaaaaa", "bbbb"
 }
@@ -42,12 +43,12 @@ func TestNil(t *testing.T) {
 		fmt.Println("one", i)
 		return i
 	})
+	//OutPut err last value nul
 }
 
 func TestNil1(t *testing.T) {
-	OfErrorable(nil, nil).
-		Then(func(i interface{}) interface{} {
-			fmt.Println("one", i)
-			return i
-		})
+	OfErrorable(nil, nil).Then(func(i interface{}) interface{} {
+		fmt.Println("not invoke", i)
+		return i
+	})
 }
