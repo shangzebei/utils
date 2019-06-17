@@ -20,9 +20,11 @@ func Distinct(s []string) []string {
 	return re
 }
 
-func HexTODecimal(o string) uint64 {
-	val := o[2:]
-	n, e := strconv.ParseUint(val, 16, 32)
+func HexTODecimal(s string) uint64 {
+	if s[0:2] == "0x" || s[0:2] == "0X" {
+		s = s[2:]
+	}
+	n, e := strconv.ParseUint(s, 16, 32)
 	if e != nil {
 		return 0
 	}

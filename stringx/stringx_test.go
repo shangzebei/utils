@@ -25,5 +25,9 @@ func TestHex(t *testing.T) {
 }
 
 func TestBIg(t *testing.T) {
+	//00020c49ba5e353f7ced916872b020c49ba5e353f7ced916872b020c49ba5e35
+	fmt.Println(HexTODecString("0x020c49ba5e353f7ced916872b020c49ba5e353f7ced916872b020c49ba5e35"))
+	fmt.Println(HexTODecString("00020c49ba5e353f7ced916872b020c49ba5e353f7ced916872b020c49ba5e35"))
+	fmt.Println(FromHex("020c49ba5e353f7ced916872b020c49ba5e353f7ced916872b020c49ba5e35"))
 
 }
