@@ -6,9 +6,10 @@ import (
 )
 
 func TestLb(t *testing.T) {
-	poll := &LBPoll{}
+	var l LB
+	l = &LBPoll{}
 	for i := 0; i < 1000; i++ {
-		fmt.Println(poll.SelectOne([]string{"A", "b", "c", "d", "e", "f"}))
+		go fmt.Println(l.SelectOne([]string{"A", "b", "c", "d", "e", "f"}))
 	}
 }
 
@@ -22,7 +23,7 @@ func TestLbRand_SelectOne(t *testing.T) {
 func TestLBPoll_SelectOne(t *testing.T) {
 	poll := &LbRand{}
 	for i := 0; i < 10; i++ {
-		fmt.Println(poll.SelectOne([]string{"a"}))
+		go fmt.Println(poll.SelectOne([]string{"a"}))
 	}
 
 }

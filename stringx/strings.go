@@ -12,8 +12,9 @@ import (
 func Distinct(s []string) []string {
 	sort.Strings(s)
 	var re []string
+	re = append(re, s[0])
 	for i := 0; i < len(s)-1; i++ {
-		if s[i] != s[i+1] || i == 0 {
+		if s[i] != s[i+1] {
 			re = append(re, s[i+1])
 		}
 	}

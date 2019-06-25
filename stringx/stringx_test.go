@@ -9,7 +9,8 @@ import (
 
 func TestName(t *testing.T) {
 	fmt.Println(Distinct([]string{"ehe", "ehe", "tsh", "tsh", "walletapi", "walletapi", "gateway", "gateway", "walletapi"}))
-
+	fmt.Println(Distinct([]string{"ehe", "walletapi", "walletapi"}))
+	assert.Equal(t, []string{"ehe", "walletapi"}, Distinct([]string{"ehe", "walletapi", "walletapi"}))
 }
 
 func TestHexTODecimal(t *testing.T) {
