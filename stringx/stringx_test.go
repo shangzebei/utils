@@ -11,6 +11,7 @@ func TestName(t *testing.T) {
 	assert.Equal(t, []string{"ehe", "walletapi"}, Distinct([]string{"ehe", "walletapi", "walletapi"}))
 	assert.Equal(t, []string{"ehe", "walletapi"}, Distinct([]string{"ehe", "ehe", "walletapi"}))
 	assert.Equal(t, []string{"ehe", "walletapi"}, Distinct([]string{"ehe", "walletapi", "ehe"}))
+	assert.Equal(t, []string{"ehe"}, Distinct([]string{"ehe", "ehe", "ehe"}))
 	assert.Equal(t, []string{"ehe", "gateway", "tsh", "walletapi"}, Distinct([]string{"ehe", "ehe", "tsh", "tsh", "walletapi", "walletapi", "gateway", "gateway", "walletapi"}))
 }
 
